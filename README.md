@@ -1,5 +1,5 @@
 # HOOD_tools
-A couple of programmes to calibrate the hood and to run a test there
+A couple of programmes to calibrate the hood and to run a test there.
 
 You need the HOOD_CALIBRATION_DATA.mat file whatever it is you want to do. It stores the saved data for the calibrations.
 CALIBRATE_HOOD.m is required for calibration.
