@@ -1,6 +1,7 @@
 clear all
 close all
 clc
+instrreset
 
 % this file runs the calibration for the hood. The data are stored in the
 % file CALIBRATE_HOOD.mat. The steps are as follows; 1) load the previous
@@ -27,13 +28,14 @@ FileName = 'HOOD_CALIBRATION_DATA.mat';
 
 %loads the previous calibration and assigns to variable names for later
 load(FileName)
-prev_DPT_zero_VDC =  Average_DPT_zero_VDC;
-prev_O2_zero_VDC = Average_O2_zero_VDC;
-prev_CO_zero_VDC = Average_CO_zero_VDC;
-prev_CO2_zero_VDC = Average_CO2_zero_VDC;
-prev_O2_span_VDC = Average_O2_span_VDC;
-prev_CO_span_VDC = Average_CO_span_VDC;
-prev_CO2_span_VDC = Average_CO2_span_VDC;
+prev_DPT_zero_VDC = DPT_calib_V(1) ;
+prev_O2_zero_VDC = O2_calib_V(1);
+prev_CO_zero_VDC = CO_calib_V(1);
+prev_CO2_zero_VDC = CO2_calib_V(1);
+prev_DPT_span_VDC = DPT_calib_V(2);
+prev_O2_span_VDC = O2_calib_V(2);
+prev_CO_span_VDC = CO_calib_V(2);
+prev_CO2_span_VDC = CO2_calib_V(2);
 
 % AGILENT Datalogger
 % Connect
@@ -57,7 +59,7 @@ fprintf(v34970A, sprintf(':FORMat:READing:TIME:TYPE %s', 'REL'));
 prompt = {'O2 Span Value, %', 'CO Span Value, ppm', 'CO2 Span Value, %'};
 dlgtitle = 'Check the span values are up to date';
 dims = [1 100];
-definput = {num2str(O2_span_value),num2str(CO_span_value), num2str(CO2_span_value)};
+definput = {num2str(O2_zero_span(2)),num2str(CO_zero_span(2)), num2str(CO2_zero_span(2))};
 span_values = inputdlg(prompt,dlgtitle,dims,definput);
 O2_span_value = str2double(cell2mat(span_values(1)));
 CO_span_value = str2double(cell2mat(span_values(2)));
@@ -68,14 +70,6 @@ save(FileName, 'O2_span_value', 'CO_span_value', 'CO2_span_value', '-append')
 
 % create a figure to house the uicontrols (aka buttons)
 calibrate_fig = figure('units', 'normalized', 'position', [0.25 0.25 0.25 0.5], 'Name', 'Press the buttons to do the tasks...','NumberTitle','off');
-
-prev_DPT_zero_VDC =  Average_DPT_zero_VDC;
-prev_O2_zero_VDC = Average_O2_zero_VDC;
-prev_CO_zero_VDC = Average_CO_zero_VDC;
-prev_CO2_zero_VDC = Average_CO2_zero_VDC;
-prev_O2_span_VDC = Average_O2_span_VDC;
-prev_CO_span_VDC = Average_CO_span_VDC;
-prev_CO2_span_VDC = Average_CO2_span_VDC;
 
 % the buttons and their callback functions.
 zero_DPT_button = uicontrol('Style', 'Pushbutton', 'String', 'Zero DPT',...

@@ -224,7 +224,12 @@ while(ishandle(stop_button)) %so the loop runs til you press STOP
     plot_duct_flow = plot(test_time, v_duct, 'parent', duct_flow_axes, 'color', 'g');
     toc
     
-    ENG_data(i,:) = [timestamp(i) test_time(i) v_data(i,:) temperatures(i,:) test_time(i) mass(i) conc_O2(i) conc_CO(i) conc_CO2(i) DPT_Pa(i) RH_ambient(i) T_cold_trap(i) T_duct(i) T_smoke(i) T_duct2(i) T_ambient(i) Q_OC__O2_CO2_CO(i) HFG_VDC(i,:) TC_Temps(i,:)];
+    if isobject(v34980A)==1
+        ENG_data(i,:) = [timestamp(i) test_time(i) v_data(i,:) temperatures(i,:) test_time(i) mass(i) conc_O2(i) conc_CO(i) conc_CO2(i) DPT_Pa(i) RH_ambient(i) T_cold_trap(i) T_duct(i) T_smoke(i) T_duct2(i) T_ambient(i) Q_OC__O2_CO2_CO(i) TC_Temps(i,:)]; % DPT(i,:)];
+    else
+        ENG_data(i,:) = [timestamp(i) test_time(i) v_data(i,:) temperatures(i,:) test_time(i) mass(i) conc_O2(i) conc_CO(i) conc_CO2(i) DPT_Pa(i) RH_ambient(i) T_cold_trap(i) T_duct(i) T_smoke(i) T_duct2(i) T_ambient(i) Q_OC__O2_CO2_CO(i)];
+    end
+    
     
     
     %        save some temporary data just in case
