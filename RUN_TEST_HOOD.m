@@ -34,34 +34,36 @@ FileName = [cell2mat(FileName)];
 
 % AGILENT -hood
 % Conenct
-v34970A = visa('agilent', 'GPIB0::9::INSTR');
-v34970A.InputBufferSize = 8388608;
-v34970A.ByteOrder = 'littleEndian';
+v34970A = visadev('GPIB0::9::INSTR');
+% v34970A.InputBufferSize = 8388608;
+% v34970A.ByteOrder = 'littleEndian';
 fopen(v34970A);
-fprintf(v34970A,'*RST');
+writeline(v34970A,'*RST');
+writeline(v34970A,'*CLS');
 % Housekeeping
-set(v34970A,'timeout',2)
+set(v34970A,'timeout',4)
 HOOD_CHANNELS_TC = '111:115';
-HOOD_CHANNELS_VDC = '101:109, 116';
+HOOD_CHANNELS_VDC = '101:109,116';
 
-fprintf(v34970A, sprintf(':FORMat:READing:CHANnel %d', 1));
-fprintf(v34970A, sprintf(':FORMat:READing:ALARm %d', 1));
-fprintf(v34970A, sprintf(':FORMat:READing:UNIT %d', 1));
-fprintf(v34970A, sprintf(':FORMat:READing:TIME:TYPE %s', 'REL'));
+writeline(v34970A, sprintf(':FORMat:READing:CHANnel %d', 1));
+writeline(v34970A, sprintf(':FORMat:READing:ALARm %d', 1));
+writeline(v34970A, sprintf(':FORMat:READing:UNIT %d', 1));
+writeline(v34970A, sprintf(':FORMat:READing:TIME:TYPE %s', 'REL'));
 
-fprintf(v34970A,sprintf(['CONF:VOLT:DC, (@' HOOD_CHANNELS_VDC ')']));             % Configure the specified channels for dc or ac voltage measurements but do not initiate the scan. Note that this command also redefines the scan list. The rage is 10V and the resolution 1PLC (3E-5 or 5 1/2 Digits or 20 Bits)
-fprintf(v34970A,sprintf(['SENS:RES:APER, 1,(@' HOOD_CHANNELS_VDC ')']));
+writeline(v34970A,sprintf(['CONF:VOLT:DC, (@' HOOD_CHANNELS_VDC ')']));   % Configure the specified channels for dc or ac voltage measurements but do not initiate the scan. Note that this command also redefines the scan list. The rage is 10V and the resolution 1PLC (3E-5 or 5 1/2 Digits or 20 Bits)
+% writeline(v34970A,sprintf(['CONF:VOLT:DC:NPLC 1, (@' HOOD_CHANNELS_VDC ')']));   
+% writeline(v34970A,sprintf(['SENS:RES:APER, 5,(@' HOOD_CHANNELS_VDC ')']));
 
-% fprintf(v34970A,sprintf(['CONF:VOLT:DC 10  ,0.001   ,(@' HOOD_CHANNELS_VDC ')']));             % Configure the specified channels for dc or ac voltage measurements but do not initiate the scan. Note that this command also redefines the scan list. The rage is 10V and the resolution 1PLC (3E-5 or 5 1/2 Digits or 20 Bits)
+% writeline(v34970A,sprintf(['CONF:VOLT:DC 10  ,0.001   ,(@' HOOD_CHANNELS_VDC ')']));             % Configure the specified channels for dc or ac voltage measurements but do not initiate the scan. Note that this command also redefines the scan list. The rage is 10V and the resolution 1PLC (3E-5 or 5 1/2 Digits or 20 Bits)
 
-fprintf(v34970A,sprintf(['CONF:TEMP TC, K,(@' HOOD_CHANNELS_TC ')']));                      % Configure the specified channels for thermocouple measurements but do not initiate the scan. Note that this command also redefines the scan list. The default (DEF) transducer type is a J-Type thermocouple.
-fprintf(v34970A,sprintf(['UNIT:TEMP K,(@' HOOD_CHANNELS_TC ')']));                          % Select the temperature measurement units on the specified channels. The default is “C”. The :TEMP? query returns the temperature measurement units currently selected. Returns “C”, “F”, or “K”.
-fprintf(v34970A,sprintf(['SENS:TEMP:TRAN:TYPE TC,(@' HOOD_CHANNELS_TC ')']));               % Select the type of temperature transducer to use for measurements on the specified channels. Select from TC (thermocouple), RTD (2-wire RTD), FRTD (4-wire RTD), or THER (thermistor) . The default is TC. The :TYPE? query returns the current temperature transducer type on the specified channels. Returns “TC”, “RTD”, “FRTD”, or “THER”.
-fprintf(v34970A,sprintf(['SENS:TEMP:TRAN:TC:TYPE K,(@' HOOD_CHANNELS_TC ')']));             % Select the thermocouple type to use on the specified channels. The default is a J-Type thermocouple. The :TYPE? query returns the thermocouple type currently in use. Returns “B”, “E”, “J”, “K”, “N”, “R”, “S”, or “T”.
-fprintf(v34970A,sprintf(['SENS:TEMP:TRAN:TC:CHEC OFF,(@' HOOD_CHANNELS_TC ')']));           % Disable or enable the thermocouple check feature to verify that your thermocouples are properly connected to the screw terminals for measurements. If you enable this feature, the instrument measures the channel resistance after each thermocouple measurement to ensure a proper connection. If an open connection is detected (greater than 5 k? on the 10 k? range), the instrument reports an overload condition for that channel. The default is “OFF”. The :CHEC? query returns the thermocouple check setting. Returns “0” (OFF) or “1” (ON).
-fprintf(v34970A,sprintf(['SENS:TEMP:TRAN:TC:RJUN:TYPE INT,(@' HOOD_CHANNELS_TC ')']));
+writeline(v34970A,sprintf(['CONF:TEMP TC, K,(@' HOOD_CHANNELS_TC ')']));                      % Configure the specified channels for thermocouple measurements but do not initiate the scan. Note that this command also redefines the scan list. The default (DEF) transducer type is a J-Type thermocouple.
+writeline(v34970A,sprintf(['UNIT:TEMP K,(@' HOOD_CHANNELS_TC ')']));                          % Select the temperature measurement units on the specified channels. The default is “C”. The :TEMP? query returns the temperature measurement units currently selected. Returns “C”, “F”, or “K”.
+writeline(v34970A,sprintf(['SENS:TEMP:TRAN:TYPE TC,(@' HOOD_CHANNELS_TC ')']));               % Select the type of temperature transducer to use for measurements on the specified channels. Select from TC (thermocouple), RTD (2-wire RTD), FRTD (4-wire RTD), or THER (thermistor) . The default is TC. The :TYPE? query returns the current temperature transducer type on the specified channels. Returns “TC”, “RTD”, “FRTD”, or “THER”.
+writeline(v34970A,sprintf(['SENS:TEMP:TRAN:TC:TYPE K,(@' HOOD_CHANNELS_TC ')']));             % Select the thermocouple type to use on the specified channels. The default is a J-Type thermocouple. The :TYPE? query returns the thermocouple type currently in use. Returns “B”, “E”, “J”, “K”, “N”, “R”, “S”, or “T”.
+writeline(v34970A,sprintf(['SENS:TEMP:TRAN:TC:CHEC OFF,(@' HOOD_CHANNELS_TC ')']));           % Disable or enable the thermocouple check feature to verify that your thermocouples are properly connected to the screw terminals for measurements. If you enable this feature, the instrument measures the channel resistance after each thermocouple measurement to ensure a proper connection. If an open connection is detected (greater than 5 k? on the 10 k? range), the instrument reports an overload condition for that channel. The default is “OFF”. The :CHEC? query returns the thermocouple check setting. Returns “0” (OFF) or “1” (ON).
+writeline(v34970A,sprintf(['SENS:TEMP:TRAN:TC:RJUN:TYPE INT,(@' HOOD_CHANNELS_TC ')']));
 
-fprintf(v34970A,sprintf(['ROUT:SCAN (@' HOOD_CHANNELS_TC ',' HOOD_CHANNELS_VDC ')']));
+writeline(v34970A,sprintf(['ROUT:SCAN (@' HOOD_CHANNELS_TC ',' HOOD_CHANNELS_VDC ')']));
 
 % a prompt in the command line to check the TC data is beign recorded
 TCs_in_use = input('Are you using temperature measurements? y/n: ', 's');
@@ -73,9 +75,9 @@ if sum(strcmp(TCs_in_use, {'Y', 'y'})) >0
     v34980A.InputBufferSize = 8388608;
     v34980A.ByteOrder = 'littleEndian';
     fopen(v34980A);
-    fprintf(v34980A,'*RST')
+    writeline(v34980A,'*RST')
     
-    fprintf(v34980A,'*CLS')
+    writeline(v34980A,'*CLS')
     
     % Housekeeping
     set(v34980A,'timeout',2)
@@ -83,38 +85,38 @@ if sum(strcmp(TCs_in_use, {'Y', 'y'})) >0
     ScanList_RTD = ['1020'];
     ScanList_HFG = ['3002:3004'];
     %
-    fprintf(v34980A, sprintf(':FORMat:READing:CHANnel %d', 1));
-    fprintf(v34980A, sprintf(':FORMat:READing:ALARm %d', 1));
-    fprintf(v34980A, sprintf(':FORMat:READing:UNIT %d', 1));
-    fprintf(v34980A, sprintf(':FORMat:READing:TIME:TYPE %s', 'REL'));
+    writeline(v34980A, sprintf(':FORMat:READing:CHANnel %d', 1));
+    writeline(v34980A, sprintf(':FORMat:READing:ALARm %d', 1));
+    writeline(v34980A, sprintf(':FORMat:READing:UNIT %d', 1));
+    writeline(v34980A, sprintf(':FORMat:READing:TIME:TYPE %s', 'REL'));
     
     %     configure the datalogger to give the right measurement type
-    fprintf(v34980A, sprintf(['CONF:TEMP TC, K, (@' ScanList_Temp ')']));
-    fprintf(v34980A, sprintf(['UNIT:TEMP, K, (@' ScanList_Temp ')']));
-    fprintf(v34980A, sprintf(['SENS:TEMP:TRAN:TYPE TC, (@' ScanList_Temp ')']));
-    fprintf(v34980A, sprintf(['SENS:TEMP:TRAN:TC:TYPE K, (@' ScanList_Temp ')']));
+    writeline(v34980A, sprintf(['CONF:TEMP TC, K, (@' ScanList_Temp ')']));
+    writeline(v34980A, sprintf(['UNIT:TEMP, K, (@' ScanList_Temp ')']));
+    writeline(v34980A, sprintf(['SENS:TEMP:TRAN:TYPE TC, (@' ScanList_Temp ')']));
+    writeline(v34980A, sprintf(['SENS:TEMP:TRAN:TC:TYPE K, (@' ScanList_Temp ')']));
     
     %
-    fprintf(v34980A, sprintf(['UNIT:TEMP, C, (@' ScanList_RTD ')']));
-    fprintf(v34980A, sprintf(['CONF:TEMP FRTD,91,(@' ScanList_RTD ')']));
-    fprintf(v34980A, sprintf(['TEMP:TRAN:FRTD:REF ON,(@' ScanList_RTD ')']))
-    fprintf(v34980A, sprintf(['SENS:TEMP:TRAN:TC:RJUN:TYPE EXT, (@' ScanList_Temp ')']))
+    writeline(v34980A, sprintf(['UNIT:TEMP, C, (@' ScanList_RTD ')']));
+    writeline(v34980A, sprintf(['CONF:TEMP FRTD,91,(@' ScanList_RTD ')']));
+    writeline(v34980A, sprintf(['TEMP:TRAN:FRTD:REF ON,(@' ScanList_RTD ')']))
+    writeline(v34980A, sprintf(['SENS:TEMP:TRAN:TC:RJUN:TYPE EXT, (@' ScanList_Temp ')']))
     
     
     %configure any voltage channels
-    fprintf(v34970A,sprintf(['CONF:VOLT:DC, (@' ScanList_HFG ')']));             % Configure the specified channels for dc or ac voltage measurements but do not initiate the scan. Note that this command also redefines the scan list. The rage is 10V and the resolution 1PLC (3E-5 or 5 1/2 Digits or 20 Bits)
-    %fprintf(v34970A,sprintf(['SENS:RES:APER, 1,(@' ScanList_HFG ')']));
+    writeline(v34980A,sprintf(['CONF:VOLT:DC, (@' ScanList_HFG ')']));             % Configure the specified channels for dc or ac voltage measurements but do not initiate the scan. Note that this command also redefines the scan list. The rage is 10V and the resolution 1PLC (3E-5 or 5 1/2 Digits or 20 Bits)
+    %writeline(v34970A,sprintf(['SENS:RES:APER, 1,(@' ScanList_HFG ')']));
     %
     
-    %         fprintf(v34980A,sprintf(['CONF:TEMP TC, K,(@' ScanList_Temp ')']));                      % Configure the specified channels for thermocouple measurements but do not initiate the scan. Note that this command also redefines the scan list. The default (DEF) transducer type is a J-Type thermocouple.
-    %         fprintf(v34980A,sprintf(['UNIT:TEMP C,(@' ScanList_Temp ')']));                          % Select the temperature measurement units on the specified channels. The default is “C”. The :TEMP? query returns the temperature measurement units currently selected. Returns “C”, “F”, or “K”.
-    %         fprintf(v34980A,sprintf(['SENS:TEMP:TRAN:TYPE TC,(@' ScanList_Temp ')']));               % Select the type of temperature transducer to use for measurements on the specified channels. Select from TC (thermocouple), RTD (2-wire RTD), FRTD (4-wire RTD), or THER (thermistor) . The default is TC. The :TYPE? query returns the current temperature transducer type on the specified channels. Returns “TC”, “RTD”, “FRTD”, or “THER”.
-    %         fprintf(v34980A,sprintf(['SENS:TEMP:TRAN:TC:TYPE K,(@' ScanList_Temp ')']));             % Select the thermocouple type to use on the specified channels. The default is a J-Type thermocouple. The :TYPE? query returns the thermocouple type currently in use. Returns “B”, “E”, “J”, “K”, “N”, “R”, “S”, or “T”.
-    %         fprintf(v34980A,sprintf(['SENS:TEMP:TRAN:TC:CHEC OFF,(@' ScanList_Temp ')']));           % Disable or enable the thermocouple check feature to verify that your thermocouples are properly connected to the screw terminals for measurements. If you enable this feature, the instrument measures the channel resistance after each thermocouple measurement to ensure a proper connection. If an open connection is detected (greater than 5 k? on the 10 k? range), the instrument reports an overload condition for that channel. The default is “OFF”. The :CHEC? query returns the thermocouple check setting. Returns “0” (OFF) or “1” (ON).
-    %         fprintf(v34980A,sprintf(['SENS:TEMP:TRAN:TC:RJUN:TYPE INT,(@' ScanList_Temp ')']));
-    %         fprintf(v34970A,sprintf(['ROUT:SCAN (@' ScanList_Temp ')']));
+    %         writeline(v34980A,sprintf(['CONF:TEMP TC, K,(@' ScanList_Temp ')']));                      % Configure the specified channels for thermocouple measurements but do not initiate the scan. Note that this command also redefines the scan list. The default (DEF) transducer type is a J-Type thermocouple.
+    %         writeline(v34980A,sprintf(['UNIT:TEMP C,(@' ScanList_Temp ')']));                          % Select the temperature measurement units on the specified channels. The default is “C”. The :TEMP? query returns the temperature measurement units currently selected. Returns “C”, “F”, or “K”.
+    %         writeline(v34980A,sprintf(['SENS:TEMP:TRAN:TYPE TC,(@' ScanList_Temp ')']));               % Select the type of temperature transducer to use for measurements on the specified channels. Select from TC (thermocouple), RTD (2-wire RTD), FRTD (4-wire RTD), or THER (thermistor) . The default is TC. The :TYPE? query returns the current temperature transducer type on the specified channels. Returns “TC”, “RTD”, “FRTD”, or “THER”.
+    %         writeline(v34980A,sprintf(['SENS:TEMP:TRAN:TC:TYPE K,(@' ScanList_Temp ')']));             % Select the thermocouple type to use on the specified channels. The default is a J-Type thermocouple. The :TYPE? query returns the thermocouple type currently in use. Returns “B”, “E”, “J”, “K”, “N”, “R”, “S”, or “T”.
+    %         writeline(v34980A,sprintf(['SENS:TEMP:TRAN:TC:CHEC OFF,(@' ScanList_Temp ')']));           % Disable or enable the thermocouple check feature to verify that your thermocouples are properly connected to the screw terminals for measurements. If you enable this feature, the instrument measures the channel resistance after each thermocouple measurement to ensure a proper connection. If an open connection is detected (greater than 5 k? on the 10 k? range), the instrument reports an overload condition for that channel. The default is “OFF”. The :CHEC? query returns the thermocouple check setting. Returns “0” (OFF) or “1” (ON).
+    %         writeline(v34980A,sprintf(['SENS:TEMP:TRAN:TC:RJUN:TYPE INT,(@' ScanList_Temp ')']));
+    %         writeline(v34970A,sprintf(['ROUT:SCAN (@' ScanList_Temp ')']));
     
-    fprintf(v34980A, ['ROUTE:SCAN (@' [ScanList_RTD ',' ScanList_Temp ',' ScanList_HFG] ')'])
+    writeline(v34980A, ['ROUTE:SCAN (@' [ScanList_RTD ',' ScanList_Temp ',' ScanList_HFG] ')'])
     
 else
     v34980A = 1;
@@ -180,7 +182,7 @@ while(ishandle(stop_button)) %so the loop runs til you press STOP
     %         TC_data = query(v34980A, sprintf(':MEASure:TEMPerature? %s,%s,(%s)', 'TCouple', 'K', '@1001:1008,1011:1018')); %scan the temperaure channels)
     %         temps = query(v34970A, sprintf(':MEASure:TEMPerature? %s,%s,(%s)', 'TCouple', 'K', '@111:115')); %scan the temperaure channels
     %         readings = query(v34970A, sprintf(':MEASure:VOLTage:DC? (%s)', '@101:109')); %scan the voltage reacdings (DPT, gases)
-    hood_data_as_text = query(v34970A, 'READ?');
+    hood_data_as_text = writeread(v34970A, 'READ?');
     data_as_num = str2num(hood_data_as_text);
     readings = data_as_num([1:9 15]);
     temps = data_as_num(10:14);
