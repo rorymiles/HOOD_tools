@@ -45,14 +45,21 @@ set(v34970A,'timeout',4)
 HOOD_CHANNELS_TC = '111:115';
 HOOD_CHANNELS_VDC = '101:109,116';
 
+% interface programming:
+% • Square brackets ( [ ] ) indicate optional keywords or parameters. n
+% • Braces ( { } ) enclose parameter choices within a command string.
+% • Triangle brackets ( < > ) enclose parameters for which you must
+% substitute a value. 
+% • A vertical bar ( | ) separates multiple parameter choices
+
 writeline(v34970A, sprintf(':FORMat:READing:CHANnel %d', 1));
 writeline(v34970A, sprintf(':FORMat:READing:ALARm %d', 1));
 writeline(v34970A, sprintf(':FORMat:READing:UNIT %d', 1));
 writeline(v34970A, sprintf(':FORMat:READing:TIME:TYPE %s', 'REL'));
 
-writeline(v34970A,sprintf(['CONF:VOLT:DC, (@' HOOD_CHANNELS_VDC ')']));   % Configure the specified channels for dc or ac voltage measurements but do not initiate the scan. Note that this command also redefines the scan list. The rage is 10V and the resolution 1PLC (3E-5 or 5 1/2 Digits or 20 Bits)
-% writeline(v34970A,sprintf(['CONF:VOLT:DC:NPLC 1, (@' HOOD_CHANNELS_VDC ')']));   
-% writeline(v34970A,sprintf(['SENS:RES:APER, 5,(@' HOOD_CHANNELS_VDC ')']));
+writeline(v34970A,sprintf(['CONF:VOLT:DC (@' HOOD_CHANNELS_VDC ')']));   % Configure the specified channels for dc or ac voltage measurements but do not initiate the scan. Note that this command also redefines the scan list. The rage is 10V and the resolution 1PLC (3E-5 or 5 1/2 Digits or 20 Bits)
+writeline(v34970A,sprintf(['SENS:VOLT:DC:NPLC 1, (@' HOOD_CHANNELS_VDC ')']));   
+% writeline(v34970A,sprintf(['SENS:RES:APER 1 (@' HOOD_CHANNELS_VDC ')']));
 
 % writeline(v34970A,sprintf(['CONF:VOLT:DC 10  ,0.001   ,(@' HOOD_CHANNELS_VDC ')']));             % Configure the specified channels for dc or ac voltage measurements but do not initiate the scan. Note that this command also redefines the scan list. The rage is 10V and the resolution 1PLC (3E-5 or 5 1/2 Digits or 20 Bits)
 
@@ -76,7 +83,6 @@ if sum(strcmp(TCs_in_use, {'Y', 'y'})) >0
     v34980A.ByteOrder = 'littleEndian';
     fopen(v34980A);
     writeline(v34980A,'*RST')
-    
     writeline(v34980A,'*CLS')
     
     % Housekeeping
@@ -95,14 +101,12 @@ if sum(strcmp(TCs_in_use, {'Y', 'y'})) >0
     writeline(v34980A, sprintf(['UNIT:TEMP, K, (@' ScanList_Temp ')']));
     writeline(v34980A, sprintf(['SENS:TEMP:TRAN:TYPE TC, (@' ScanList_Temp ')']));
     writeline(v34980A, sprintf(['SENS:TEMP:TRAN:TC:TYPE K, (@' ScanList_Temp ')']));
-    
     %
     writeline(v34980A, sprintf(['UNIT:TEMP, C, (@' ScanList_RTD ')']));
     writeline(v34980A, sprintf(['CONF:TEMP FRTD,91,(@' ScanList_RTD ')']));
     writeline(v34980A, sprintf(['TEMP:TRAN:FRTD:REF ON,(@' ScanList_RTD ')']))
     writeline(v34980A, sprintf(['SENS:TEMP:TRAN:TC:RJUN:TYPE EXT, (@' ScanList_Temp ')']))
-    
-    
+   
     %configure any voltage channels
     writeline(v34980A,sprintf(['CONF:VOLT:DC, (@' ScanList_HFG ')']));             % Configure the specified channels for dc or ac voltage measurements but do not initiate the scan. Note that this command also redefines the scan list. The rage is 10V and the resolution 1PLC (3E-5 or 5 1/2 Digits or 20 Bits)
     %writeline(v34970A,sprintf(['SENS:RES:APER, 1,(@' ScanList_HFG ')']));
@@ -327,8 +331,8 @@ end
 function [Q_OC__O2_CO2_CO, v_duct, X0_O2_A, X0_CO_A, X0_CO2_A] = HRR_calc(i, conc_CO, conc_CO2, conc_O2, T_ambient, T_duct, RH_ambient, DPT_Pa, v_duct, X0_O2_A, X0_CO_A, X0_CO2_A,Q_OC__O2_CO2_CO)
 %%% MOST OF THE INDEXING HERE CAN GO! %%%%
 %turn T into units of K
-T_ambient = T_ambient+273;
-T_duct = T_duct+273;
+% T_ambient = T_ambient+273;
+% T_duct = T_duct+273;
 
 % Define constants needed for HRR calcs
 %MW of species
@@ -375,6 +379,7 @@ v_duct(i) = m_duct(i)./rho_air(i).*1000;
 % Mole fractions &c
 X_CO_A(i) = conc_CO(i) ./ 10^6;
 X_CO2_A(i) = conc_CO2(i) ./ 10^6;
+
 X_O2_A(i) = conc_O2(i) ./ 100;
 
 p_H2O_saturation(i) = exp(23.2 - 3816 ./ (-46 + T_ambient(i)));
