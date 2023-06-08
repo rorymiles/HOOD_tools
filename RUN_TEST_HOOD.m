@@ -228,6 +228,7 @@ while(ishandle(stop_button)) %so the loop runs til you press STOP
     plot_CO2 = plot(test_time, conc_CO2, 'parent', CO2_axes, 'color', 'r');
     plot_HRR = plot(test_time, Q_OC__O2_CO2_CO, 'parent', HRR_axes, 'color', 'r');
     plot_duct_flow = plot(test_time, v_duct, 'parent', duct_flow_axes, 'color', 'g');
+   % pause(0.01)
     toc
     
     if isobject(v34980A)==1

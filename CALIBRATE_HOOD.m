@@ -61,12 +61,12 @@ dlgtitle = 'Check the span values are up to date';
 dims = [1 100];
 definput = {num2str(O2_zero_span(2)),num2str(CO_zero_span(2)), num2str(CO2_zero_span(2))};
 span_values = inputdlg(prompt,dlgtitle,dims,definput);
-O2_span_value = str2double(cell2mat(span_values(1)));
-CO_span_value = str2double(cell2mat(span_values(2)));
-CO2_span_value = str2double(cell2mat(span_values(3)));
+O2_zero_span(2) = str2double(cell2mat(span_values(1)));
+CO_zero_span(2) = str2double(cell2mat(span_values(2)));
+CO2_zero_span(2) = str2double(cell2mat(span_values(3)));
 
 % save the values to the CALIBRATE_HOOD.mat file
-save(FileName, 'O2_span_value', 'CO_span_value', 'CO2_span_value', '-append')
+save(FileName, 'O2_zero_span', 'CO_zero_span', 'CO2_zero_span', '-append')
 
 % create a figure to house the uicontrols (aka buttons)
 calibrate_fig = figure('units', 'normalized', 'position', [0.25 0.25 0.25 0.5], 'Name', 'Press the buttons to do the tasks...','NumberTitle','off');
@@ -111,8 +111,9 @@ for i = 1:10
     disp(['VDC O2 Zero = ' num2str(O2_zero_VDC(i))])
 end
 Average_O2_zero_VDC = mean(O2_zero_VDC);
+O2_calib_V(1) = Average_O2_zero_VDC;
 disp(['New VDC O2 Zero = ' num2str(Average_O2_zero_VDC) ' V. Previous value was ' num2str(prev_O2_zero_VDC) ' V.' 'If there is a big diffeerence maybe someting is wrong']);
-save(FileName, 'Average_O2_zero_VDC', '-append')
+save(FileName, 'Average_O2_zero_VDC', 'O2_calib_V', '-append')
 end
 
 function zero_CO(~,~,prev_CO_zero_VDC,v34970A, FileName)
@@ -123,9 +124,9 @@ for i = 1:10
     disp(['VDC CO Zero = ' num2str(CO_zero_VDC(i))])
 end
 Average_CO_zero_VDC = mean(CO_zero_VDC);
+CO_calib_V(1) = Average_CO_zero_VDC;
 disp(['New VDC CO Zero = ' num2str(Average_CO_zero_VDC) ' V. Previous value was ' num2str(prev_CO_zero_VDC) ' V.' 'If there is a big diffeerence maybe someting is wrong']);
-save(FileName, 'Average_CO_zero_VDC', '-append')
-
+save(FileName, 'Average_CO_zero_VDC', 'CO_calib_V', '-append')
 end
 
 function zero_CO2(~,~,prev_CO2_zero_VDC,v34970A, FileName)
@@ -136,9 +137,9 @@ for i = 1:10
     disp(['VDC CO2 Zero = ' num2str(CO2_zero_VDC(i))])
 end
 Average_CO2_zero_VDC = mean(CO2_zero_VDC);
+CO2_calib_V(1) = Average_CO2_zero_VDC;
 disp(['New VDC CO2 Zero = ' num2str(Average_CO2_zero_VDC) ' V. Previous value was ' num2str(prev_CO2_zero_VDC) ' V.' 'If there is a big diffeerence maybe someting is wrong']);
-save(FileName, 'Average_CO2_zero_VDC', '-append')
-
+save(FileName, 'Average_CO2_zero_VDC', 'CO2_calib_V', '-append')
 end
 
 function span_O2(~,~,prev_O2_span_VDC,v34970A, FileName)
@@ -149,9 +150,9 @@ for i = 1:10
     disp(['VDC O2 span = ' num2str(O2_span_VDC(i))])
 end
 Average_O2_span_VDC = mean(O2_span_VDC);
+O2_calib_V(2) = Average_O2_span_VDC;
 disp(['New VDC O2 span = ' num2str(Average_O2_span_VDC) ' V. Previous value was ' num2str(prev_O2_span_VDC) ' V.' 'If there is a big diffeerence maybe someting is wrong']);
-save(FileName, 'Average_O2_span_VDC', '-append')
-
+save(FileName, 'Average_O2_span_VDC', 'O2_calib_V', '-append')
 end
 
 function span_CO(~,~,prev_CO_span_VDC,v34970A, FileName)
@@ -162,9 +163,9 @@ for i = 1:10
     disp(['VDC CO span = ' num2str(CO_span_VDC(i))])
 end
 Average_CO_span_VDC = mean(CO_span_VDC);
+CO_calib_V(2) = Average_CO_span_VDC;
 disp(['New VDC CO span = ' num2str(Average_CO_span_VDC) ' V. Previous value was ' num2str(prev_CO_span_VDC) ' V.' 'If there is a big diffeerence maybe someting is wrong']);
-save(FileName, 'Average_CO_span_VDC', '-append')
-
+save(FileName, 'Average_CO_span_VDC', 'CO_calib_V', '-append')
 end
 
 function span_CO2(~,~,prev_CO2_span_VDC,v34970A, FileName)
@@ -175,9 +176,9 @@ for i = 1:10
     disp(['VDC CO2 span = ' num2str(CO2_span_VDC(i))])
 end
 Average_CO2_span_VDC = mean(CO2_span_VDC);
+CO2_calib_V(2) = Average_CO2_span_VDC;
 disp(['New VDC CO2 span = ' num2str(Average_CO2_span_VDC) ' V. Previous value was ' num2str(prev_CO2_span_VDC) ' V.' 'If there is a big diffeerence maybe someting is wrong']);
-save(FileName, 'Average_CO2_span_VDC', '-append')
-
+save(FileName, 'Average_CO2_span_VDC', 'CO2_calib_V', '-append')
 end
 
 function all_done(~,~,v34970A)
