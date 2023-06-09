@@ -167,7 +167,7 @@ X0_CO_A = 0;
 X0_CO2_A = 0;
 Q_OC__O2_CO2_CO = 0;
 
-% This is where the magic (DATA LOGGING) happens
+%%%%%%%%%%%% This is where the magic (DATA LOGGING) happens %%%%%%%%%%%%%%%
 
 while(ishandle(stop_button)) %so the loop runs til you press STOP
     
@@ -228,16 +228,13 @@ while(ishandle(stop_button)) %so the loop runs til you press STOP
     plot_CO2 = plot(test_time, conc_CO2, 'parent', CO2_axes, 'color', 'r');
     plot_HRR = plot(test_time, Q_OC__O2_CO2_CO, 'parent', HRR_axes, 'color', 'r');
     plot_duct_flow = plot(test_time, v_duct, 'parent', duct_flow_axes, 'color', 'g');
-   % pause(0.01)
     toc
     
     if isobject(v34980A)==1
         ENG_data(i,:) = [timestamp(i) test_time(i) v_data(i,:) temperatures(i,:) test_time(i) mass(i) conc_O2(i) conc_CO(i) conc_CO2(i) DPT_Pa(i) RH_ambient(i) T_cold_trap(i) T_duct(i) T_smoke(i) T_duct2(i) T_ambient(i) Q_OC__O2_CO2_CO(i) TC_Temps(i,:)]; % DPT(i,:)];
     else
         ENG_data(i,:) = [timestamp(i) test_time(i) v_data(i,:) temperatures(i,:) test_time(i) mass(i) conc_O2(i) conc_CO(i) conc_CO2(i) DPT_Pa(i) RH_ambient(i) T_cold_trap(i) T_duct(i) T_smoke(i) T_duct2(i) T_ambient(i) Q_OC__O2_CO2_CO(i)];
-    end
-    
-    
+    end  
     
     %        save some temporary data just in case
     tic
@@ -262,7 +259,7 @@ end
 %     'ignition_row', 'ignition_time', 'event_row', 'event_time',  'flameout_row', 'flameout_time',...
 %     'Q_OC__O2_CO2_CO', '-append')
 
-%save the variables
+%%%%%%%%%%%%%%%%%%%%%%%%%%% save the variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 save([FileName '.mat'])%, '-append')
 %Close and delete the objects
 fclose(v34970A);
@@ -279,9 +276,11 @@ if isobject(loadcell) == 1
     clear loadcell
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%% FUNCTIONS CALLED EARLIER %%%%%%%%%%%%%%%%%%%%%%%%%%
 % THESE ARE THE FUNCTIONS CALLED EARLIER TO KEEP THE CODE FROM LOOKING TOO UGLY
 
-%a function to create the axes
+
+%%%%%%%%%%%%%%%%%%%%%% a function to create the axes %%%%%%%%%%%%%%%%%%%%%%
 function [O2_axes, CO_axes, CO2_axes, mass_axes, HRR_axes, duct_flow_axes] = prepare_axes(test_fig)
 O2_axes = axes('Parent', test_fig, 'Position',[0.05 0.75 0.15 0.15], 'box', 'on');
 CO_axes = axes('Parent', test_fig, 'Position',[0.3 0.75 0.15 0.15], 'box', 'on');
@@ -310,6 +309,9 @@ mass_axes.XLabel.String = 'Time, s';
 HRR_axes.XLabel.String = 'Time, s';
 duct_flow_axes.XLabel.String = 'Time, s';
 end
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Calibrations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %a function to deal with the conversion between volts and engineerng units
 function [O2_fit, CO_fit, CO2_fit, DPT_fit, RH_fit] = vdc2eng_units(FileName)
 
@@ -318,17 +320,19 @@ load HOOD_CALIBRATION_DATA.mat
 RH_calib_V = [0 5];
 RH_zero_span = [0 100];
 
-O2_fit = polyfit(O2_calib_V, O2_zero_span, 1);
-CO_fit = polyfit(CO_calib_V, CO_zero_span, 1);
-CO2_fit = polyfit(CO2_calib_V, CO2_zero_span, 1);
+O2_fit = polyfit([Average_O2_zero_VDC Average_O2_span_VDC], O2_zero_span, 1);
+CO_fit = polyfit([Average_CO_zero_VDC Average_CO_span_VDC], CO_zero_span, 1);
+CO2_fit = polyfit([Average_CO2_zero_VDC Average_CO2_span_VDC], CO2_zero_span, 1);
 DPT_fit = polyfit([DPT_calib_V], DPT_zero_span, 1);
 RH_fit = polyfit(RH_calib_V, RH_zero_span, 1);
 
-save(FileName, 'O2_calib_V', 'CO_calib_V', 'CO2_calib_V', 'DPT_calib_V',...
-    'O2_zero_span', 'CO_zero_span', 'CO2_zero_span', 'DPT_zero_span');
+save(FileName, 'DPT_calib_V',...
+    'O2_zero_span', 'CO_zero_span', 'CO2_zero_span', 'DPT_zero_span', 'O2_fit', 'CO_fit', 'CO2_fit');
 
 end
 
+
+%%%%%%%%%%%%%%%%%%%%%%%% Calorimetry Calculations %%%%%%%%%%%%%%%%%%%%%%%%%
 function [Q_OC__O2_CO2_CO, v_duct, X0_O2_A, X0_CO_A, X0_CO2_A] = HRR_calc(i, conc_CO, conc_CO2, conc_O2, T_ambient, T_duct, RH_ambient, DPT_Pa, v_duct, X0_O2_A, X0_CO_A, X0_CO2_A,Q_OC__O2_CO2_CO)
 %%% MOST OF THE INDEXING HERE CAN GO! %%%%
 %turn T into units of K
@@ -432,3 +436,6 @@ Q_OC__O2_CO2_CO(i) = ((E_O2 .* PHI_O2_CO2_CO(i) - (E_CO - E_O2) .* (1-PHI_O2_CO2
     m_incoming_air(i) ./ M_incoming_air(i) .*  M_O2 .* (1 - X0_H2O(i)) * X0_O2_A)*1000;
 
 end
+
+
+

@@ -75,17 +75,17 @@ calibrate_fig = figure('units', 'normalized', 'position', [0.25 0.25 0.25 0.5], 
 zero_DPT_button = uicontrol('Style', 'Pushbutton', 'String', 'Zero DPT',...
     'fontsize', 16, 'BackgroundColor',[0.8 0.8 0.8], 'units', 'normalized', 'Position', [0 7/8 1 1/8-1/40],'Callback', {@zero_DPT,prev_DPT_zero_VDC,v34970A, FileName});
 zero_O2_button = uicontrol('Style', 'Pushbutton', 'String', 'Zero O2',...
-    'fontsize', 16, 'BackgroundColor',[0.8 0.8 0.8], 'units', 'normalized', 'Position', [0 6/8 1 1/8-1/40],'Callback', {@zero_O2,prev_O2_zero_VDC,v34970A, FileName});
+    'fontsize', 16, 'BackgroundColor',[0.8 0.8 0.8], 'units', 'normalized', 'Position', [0 6/8 1 1/8-1/40],'Callback', {@zero_O2,prev_O2_zero_VDC,O2_calib_V,v34970A, FileName});
 zero_CO_button = uicontrol('Style', 'Pushbutton', 'String', 'Zero CO',...
-    'fontsize', 16, 'BackgroundColor',[0.8 0.8 0.8], 'units', 'normalized', 'Position', [0 5/8 1 1/8-1/40],'Callback', {@zero_CO,prev_CO_zero_VDC,v34970A, FileName});
+    'fontsize', 16, 'BackgroundColor',[0.8 0.8 0.8], 'units', 'normalized', 'Position', [0 5/8 1 1/8-1/40],'Callback', {@zero_CO,prev_CO_zero_VDC,CO_calib_V,v34970A, FileName});
 zero_CO2_button = uicontrol('Style', 'Pushbutton', 'String', 'Zero CO2',...
-    'fontsize', 16, 'BackgroundColor',[0.8 0.8 0.8], 'units', 'normalized', 'Position', [0 4/8 1 1/8-1/40],'Callback', {@zero_CO2,prev_CO2_zero_VDC,v34970A, FileName});
+    'fontsize', 16, 'BackgroundColor',[0.8 0.8 0.8], 'units', 'normalized', 'Position', [0 4/8 1 1/8-1/40],'Callback', {@zero_CO2,prev_CO2_zero_VDC,CO2_calib_V,v34970A, FileName});
 span_O2_button = uicontrol('Style', 'Pushbutton', 'String', 'Span O2',...
-    'fontsize', 16, 'BackgroundColor',[0.8 0.8 0.8], 'units', 'normalized', 'Position', [0 3/8 1 1/8-1/40],'Callback', {@span_O2,prev_O2_span_VDC,v34970A, FileName});
+    'fontsize', 16, 'BackgroundColor',[0.8 0.8 0.8], 'units', 'normalized', 'Position', [0 3/8 1 1/8-1/40],'Callback', {@span_O2,prev_O2_span_VDC,O2_calib_V,v34970A, FileName});
 span_CO_button = uicontrol('Style', 'Pushbutton', 'String', 'Span CO',...
-        'fontsize', 16, 'BackgroundColor',[0.8 0.8 0.8], 'units', 'normalized', 'Position', [0 2/8 1 1/8-1/40],'Callback', {@span_CO,prev_CO_span_VDC,v34970A, FileName});
+        'fontsize', 16, 'BackgroundColor',[0.8 0.8 0.8], 'units', 'normalized', 'Position', [0 2/8 1 1/8-1/40],'Callback', {@span_CO,prev_CO_span_VDC,CO_calib_V,v34970A, FileName});
 span_CO2_button = uicontrol('Style', 'Pushbutton', 'String', 'Span CO2',...
-    'fontsize', 16, 'BackgroundColor',[0.8 0.8 0.8], 'units', 'normalized', 'Position', [0 1/8 1 1/8-1/40],'Callback', {@span_CO2,prev_CO2_span_VDC,v34970A, FileName});
+    'fontsize', 16, 'BackgroundColor',[0.8 0.8 0.8], 'units', 'normalized', 'Position', [0 1/8 1 1/8-1/40],'Callback', {@span_CO2,prev_CO2_span_VDC,CO2_calib_V,v34970A, FileName});
 all_done_button = uicontrol('Style', 'Pushbutton', 'String', 'All done!',...
     'fontsize', 16, 'BackgroundColor',[0.8 0.8 0.8], 'units', 'normalized', 'Position', [0 0/8 1 1/8-1/40],'Callback', {@all_done,v34970A});
 
@@ -99,11 +99,11 @@ for i = 1:10
     disp(['VDC DPT Zero = ' num2str(DPT_zero_VDC(i)) ' V.'])
 end
 Average_DPT_zero_VDC = mean(DPT_zero_VDC);
-disp(['New VDC DPT Zero = ' num2str(Average_DPT_zero_VDC) ' V. Previous value was ' num2str(prev_DPT_zero_VDC) ' V.' 'If there is a big diffeerence maybe someting is wrong']);
+disp(['New VDC DPT Zero = ' num2str(Average_DPT_zero_VDC) ' V. Previous value was ' num2str(prev_DPT_zero_VDC) ' V.' 'If there is a big difference maybe someting is wrong']);
 save(FileName, 'Average_DPT_zero_VDC', '-append')
 end
 
-function zero_O2(~,~,prev_O2_zero_VDC,v34970A, FileName)
+function zero_O2(~,~,prev_O2_zero_VDC,O2_calib_V,v34970A, FileName)
 for i = 1:10
     readings = query(v34970A, sprintf(':MEASure:VOLTage:DC? (%s)', '@101:109')); %scan the voltage reacdings (DPT, gases)
     v_data(i,:) = str2num(readings); %make a variable that is a matriix of all teh channels
@@ -111,12 +111,11 @@ for i = 1:10
     disp(['VDC O2 Zero = ' num2str(O2_zero_VDC(i))])
 end
 Average_O2_zero_VDC = mean(O2_zero_VDC);
-O2_calib_V(1) = Average_O2_zero_VDC;
-disp(['New VDC O2 Zero = ' num2str(Average_O2_zero_VDC) ' V. Previous value was ' num2str(prev_O2_zero_VDC) ' V.' 'If there is a big diffeerence maybe someting is wrong']);
+disp(['New VDC O2 Zero = ' num2str(Average_O2_zero_VDC) ' V. Previous value was ' num2str(prev_O2_zero_VDC) ' V.' 'If there is a big difference maybe someting is wrong']);
 save(FileName, 'Average_O2_zero_VDC', 'O2_calib_V', '-append')
 end
 
-function zero_CO(~,~,prev_CO_zero_VDC,v34970A, FileName)
+function zero_CO(~,~,prev_CO_zero_VDC,CO_calib_V,v34970A, FileName)
 for i = 1:10
     readings = query(v34970A, sprintf(':MEASure:VOLTage:DC? (%s)', '@101:109')); %scan the voltage reacdings (DPT, gases)
     v_data(i,:) = str2num(readings); %make a variable that is a matriix of all teh channels
@@ -124,12 +123,11 @@ for i = 1:10
     disp(['VDC CO Zero = ' num2str(CO_zero_VDC(i))])
 end
 Average_CO_zero_VDC = mean(CO_zero_VDC);
-CO_calib_V(1) = Average_CO_zero_VDC;
-disp(['New VDC CO Zero = ' num2str(Average_CO_zero_VDC) ' V. Previous value was ' num2str(prev_CO_zero_VDC) ' V.' 'If there is a big diffeerence maybe someting is wrong']);
+disp(['New VDC CO Zero = ' num2str(Average_CO_zero_VDC) ' V. Previous value was ' num2str(prev_CO_zero_VDC) ' V.' 'If there is a big difference maybe someting is wrong']);
 save(FileName, 'Average_CO_zero_VDC', 'CO_calib_V', '-append')
 end
 
-function zero_CO2(~,~,prev_CO2_zero_VDC,v34970A, FileName)
+function zero_CO2(~,~,prev_CO2_zero_VDC,CO2_calib_V,v34970A, FileName)
 for i = 1:10
     readings = query(v34970A, sprintf(':MEASure:VOLTage:DC? (%s)', '@101:109')); %scan the voltage reacdings (DPT, gases)
     v_data(i,:) = str2num(readings); %make a variable that is a matriix of all teh channels
@@ -137,12 +135,11 @@ for i = 1:10
     disp(['VDC CO2 Zero = ' num2str(CO2_zero_VDC(i))])
 end
 Average_CO2_zero_VDC = mean(CO2_zero_VDC);
-CO2_calib_V(1) = Average_CO2_zero_VDC;
-disp(['New VDC CO2 Zero = ' num2str(Average_CO2_zero_VDC) ' V. Previous value was ' num2str(prev_CO2_zero_VDC) ' V.' 'If there is a big diffeerence maybe someting is wrong']);
+disp(['New VDC CO2 Zero = ' num2str(Average_CO2_zero_VDC) ' V. Previous value was ' num2str(prev_CO2_zero_VDC) ' V.' 'If there is a big difference maybe someting is wrong']);
 save(FileName, 'Average_CO2_zero_VDC', 'CO2_calib_V', '-append')
 end
 
-function span_O2(~,~,prev_O2_span_VDC,v34970A, FileName)
+function span_O2(~,~,prev_O2_span_VDC,O2_calib_V,v34970A, FileName)
 for i = 1:10
     readings = query(v34970A, sprintf(':MEASure:VOLTage:DC? (%s)', '@101:109')); %scan the voltage reacdings (DPT, gases)
     v_data(i,:) = str2num(readings); %make a variable that is a matriix of all teh channels
@@ -150,12 +147,11 @@ for i = 1:10
     disp(['VDC O2 span = ' num2str(O2_span_VDC(i))])
 end
 Average_O2_span_VDC = mean(O2_span_VDC);
-O2_calib_V(2) = Average_O2_span_VDC;
-disp(['New VDC O2 span = ' num2str(Average_O2_span_VDC) ' V. Previous value was ' num2str(prev_O2_span_VDC) ' V.' 'If there is a big diffeerence maybe someting is wrong']);
+disp(['New VDC O2 span = ' num2str(Average_O2_span_VDC) ' V. Previous value was ' num2str(prev_O2_span_VDC) ' V.' 'If there is a big difference maybe someting is wrong']);
 save(FileName, 'Average_O2_span_VDC', 'O2_calib_V', '-append')
 end
 
-function span_CO(~,~,prev_CO_span_VDC,v34970A, FileName)
+function span_CO(~,~,prev_CO_span_VDC,CO_calib_V,v34970A, FileName)
 for i = 1:10
     readings = query(v34970A, sprintf(':MEASure:VOLTage:DC? (%s)', '@101:109')); %scan the voltage reacdings (DPT, gases)
     v_data(i,:) = str2num(readings); %make a variable that is a matriix of all teh channels
@@ -163,12 +159,11 @@ for i = 1:10
     disp(['VDC CO span = ' num2str(CO_span_VDC(i))])
 end
 Average_CO_span_VDC = mean(CO_span_VDC);
-CO_calib_V(2) = Average_CO_span_VDC;
-disp(['New VDC CO span = ' num2str(Average_CO_span_VDC) ' V. Previous value was ' num2str(prev_CO_span_VDC) ' V.' 'If there is a big diffeerence maybe someting is wrong']);
+disp(['New VDC CO span = ' num2str(Average_CO_span_VDC) ' V. Previous value was ' num2str(prev_CO_span_VDC) ' V.' 'If there is a big difference maybe someting is wrong']);
 save(FileName, 'Average_CO_span_VDC', 'CO_calib_V', '-append')
 end
 
-function span_CO2(~,~,prev_CO2_span_VDC,v34970A, FileName)
+function span_CO2(~,~,prev_CO2_span_VDC,CO2_calib_V,v34970A, FileName)
 for i = 1:10
     readings = query(v34970A, sprintf(':MEASure:VOLTage:DC? (%s)', '@101:109')); %scan the voltage reacdings (DPT, gases)
     v_data(i,:) = str2num(readings); %make a variable that is a matriix of all teh channels
@@ -176,8 +171,7 @@ for i = 1:10
     disp(['VDC CO2 span = ' num2str(CO2_span_VDC(i))])
 end
 Average_CO2_span_VDC = mean(CO2_span_VDC);
-CO2_calib_V(2) = Average_CO2_span_VDC;
-disp(['New VDC CO2 span = ' num2str(Average_CO2_span_VDC) ' V. Previous value was ' num2str(prev_CO2_span_VDC) ' V.' 'If there is a big diffeerence maybe someting is wrong']);
+disp(['New VDC CO2 span = ' num2str(Average_CO2_span_VDC) ' V. Previous value was ' num2str(prev_CO2_span_VDC) ' V.' 'If there is a big difference maybe someting is wrong']);
 save(FileName, 'Average_CO2_span_VDC', 'CO2_calib_V', '-append')
 end
 
