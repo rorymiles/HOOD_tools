@@ -384,8 +384,7 @@ v_duct(i) = m_duct(i)./rho_air(i).*1000;
 % Mole fractions &c
 X_CO_A(i) = conc_CO(i) ./ 10^6;
 X_CO2_A(i) = conc_CO2(i) ./ 10^2;
-
-X_O2_A(i) = conc_O2(i) ./ 100;
+X_O2_A(i) = conc_O2(i) ./ 10^2;
 
 p_H2O_saturation(i) = exp(23.2 - 3816 ./ (-46 + T_ambient(i)));
 X0_H2O(i) = RH_ambient(i) .* p_H2O_saturation(i) ./ 100 ./ p_ambient;   % The molar fraction of water vapor Equation (10) Ref.I
