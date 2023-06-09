@@ -383,7 +383,7 @@ v_duct(i) = m_duct(i)./rho_air(i).*1000;
 
 % Mole fractions &c
 X_CO_A(i) = conc_CO(i) ./ 10^6;
-X_CO2_A(i) = conc_CO2(i) ./ 10^6;
+X_CO2_A(i) = conc_CO2(i) ./ 10^2;
 
 X_O2_A(i) = conc_O2(i) ./ 100;
 
