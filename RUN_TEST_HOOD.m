@@ -219,7 +219,7 @@ while(ishandle(stop_button)) %so the loop runs til you press STOP
     T_duct2(i) =  temperatures(i,4);
     T_ambient(i) = temperatures(i,5);
     
-    [Q_OC__O2_CO2_CO, v_duct, X0_O2_A, X0_CO_A, X0_CO2_A] = HRR_calc(i, conc_CO, conc_CO2, conc_O2, T_ambient, T_duct, RH_ambient, DPT_Pa, v_duct, X0_O2_A, X0_CO_A, X0_CO2_A, Q_OC__O2_CO2_CO);
+    [Q_OC__O2_CO2_CO, v_duct, m_duct, X0_O2_A, X0_CO_A, X0_CO2_A] = HRR_calc(i, conc_CO, conc_CO2, conc_O2, T_ambient, T_duct, RH_ambient, DPT_Pa, v_duct, X0_O2_A, X0_CO_A, X0_CO2_A, Q_OC__O2_CO2_CO);
     
     tic
     plot_O2 = plot(test_time, conc_O2, 'parent', O2_axes, 'color', 'b');
@@ -333,7 +333,7 @@ end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%% Calorimetry Calculations %%%%%%%%%%%%%%%%%%%%%%%%%
-function [Q_OC__O2_CO2_CO, v_duct, X0_O2_A, X0_CO_A, X0_CO2_A] = HRR_calc(i, conc_CO, conc_CO2, conc_O2, T_ambient, T_duct, RH_ambient, DPT_Pa, v_duct, X0_O2_A, X0_CO_A, X0_CO2_A,Q_OC__O2_CO2_CO)
+function [Q_OC__O2_CO2_CO, v_duct, m_duct, X0_O2_A, X0_CO_A, X0_CO2_A] = HRR_calc(i, conc_CO, conc_CO2, conc_O2, T_ambient, T_duct, RH_ambient, DPT_Pa, v_duct, X0_O2_A, X0_CO_A, X0_CO2_A,Q_OC__O2_CO2_CO)
 %%% MOST OF THE INDEXING HERE CAN GO! %%%%
 %turn T into units of K
 % T_ambient = T_ambient+273;
