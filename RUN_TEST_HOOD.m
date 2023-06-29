@@ -274,7 +274,7 @@ if isobject(loadcell) == 1
     fclose(loadcell);
     delete(loadcell);
     clear loadcell
-end
+    endn
 
 %%%%%%%%%%%%%%%%%%%%%%%% FUNCTIONS CALLED EARLIER %%%%%%%%%%%%%%%%%%%%%%%%%%
 % THESE ARE THE FUNCTIONS CALLED EARLIER TO KEEP THE CODE FROM LOOKING TOO UGLY
